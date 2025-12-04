@@ -54,6 +54,11 @@
                         <div class="card-body p-5 text-center">
                             <h1 class="display-5 mb-2">CVE Search</h1>
                             <h2 class="lead mb-4">CVE Identifiers Lookup</h2>
+                            <div class="mb-3 text-start">
+                                <label for="cveFileInput" class="form-label">Upload CVE file</label>
+                                <input type="file" class="form-control" id="cveFileInput" accept=".txt" aria-describedby="cveFileHelp">
+                                <div id="cveFileHelp" class="form-text">Upload a text file where each line is a CVE ID (for example: CVE-2023-12345). Existing inputs will be replaced by file contents.</div>
+                            </div>
                             <div id="cveInputsContainer">
                                 <div class="cve-input-group d-flex align-items-center gap-2">
                                     <input type="text" class="form-control form-control-lg cve-input" placeholder="CVE-YYYY-NNNN" pattern="CVE-\d{4}-\d{4,}">
@@ -73,5 +78,5 @@
     <script src="js/index.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+    </body>
 </html>
