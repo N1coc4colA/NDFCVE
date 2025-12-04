@@ -57,7 +57,6 @@ body {
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  transition: all 0.3s ease;
 }
 
 .cve-input:focus {
@@ -77,14 +76,7 @@ body {
   padding: 0.75rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.3s ease;
   width: 100%;
-}
-
-.btn-search:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
 }
 
 .remove-btn {
@@ -93,22 +85,11 @@ body {
   color: #6b7280;
   cursor: pointer;
   padding: 0.5rem;
-  transition: color 0.2s ease;
-}
-
-.remove-btn:hover {
-  color: #ef4444;
 }
 
 /* Styles pour les cartes CVE */
 .cve-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 2px solid var(--gray-light);
-}
-
-.cve-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
 .cve-card .card-header {
@@ -126,24 +107,55 @@ body {
   border-radius: 8px;
 }
 
+.cvss-row {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.cvss-row:last-child {
+  border-bottom: none;
+}
+
+.cvss-label {
+  font-size: 0.85rem;
+}
+
+.cvss-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cvss-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 4px currentColor;
+}
+
+.cvss-indicator.bg-danger {
+  box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+.cvss-indicator.bg-warning {
+  box-shadow: 0 0 6px rgba(255, 193, 7, 0.6);
+}
+
+.cvss-indicator.bg-success {
+  box-shadow: 0 0 6px rgba(25, 135, 84, 0.6);
+}
+
 .cwe-section .badge {
   margin-bottom: 0.25rem;
-}
-
-.cwe-badge {
-  transition: all 0.2s ease;
-}
-
-.cwe-badge:hover {
-  background-color: var(--primary-color) !important;
-  color: var(--white) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .affected-tech .badge {
   font-size: 0.75rem;
   padding: 0.35rem 0.5rem;
+}
+
+#pocModal .badge {
+  font-size: 0.7rem;
 }
 
 @media (max-width: 768px) {
