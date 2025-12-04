@@ -1,8 +1,8 @@
 services:
-  webcal:
+  cve-serv:
     build: .
     ports:
       - "80:80"
 
 volumes:
-  webcal-db-data:
+  cve-serv-data:
