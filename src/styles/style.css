@@ -93,6 +93,11 @@ body {
   padding: 0.25rem;
 }
 
+.remove-btn:hover {
+    color: #df3a3a;
+}
+
+
 .cve-card {
   border: 1px solid var(--border);
   border-radius: 10px;
