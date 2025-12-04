@@ -3,6 +3,7 @@
   --gray-dark: #111827;
   --gray-light: #f8fafc;
   --border: #e5e7eb;
+  --white: #ffffff;
 }
 
 html {
@@ -61,6 +62,12 @@ body {
   padding: 0.7rem 1rem;
   font-size: 1rem;
   background-color: var(--gray-light);
+}
+
+/* Inputs that are not present in KEV are shown light red */
+.cve-input.kev-not-present {
+  background-color: #fff5f5; /* very light red */
+  border-color: #fca5a5; /* red-300 */
 }
 
 .cve-input:focus {
