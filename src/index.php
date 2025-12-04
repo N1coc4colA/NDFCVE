@@ -19,49 +19,55 @@
     </header>
 
     <main class="main-content">
-        <div class="container d-flex flex-column align-items-center gap-4 py-5">
-            <form id="searchForm" class="card shadow-lg w-100" style="max-width:900px;">
-                <div class="card-body p-5 text-center">
-                    <h1 class="display-5 mb-2">CVE Lookup</h1>
-                    <h2 class="lead mb-4">Search CVE data quickly</h2>
+        <div class="container py-5">
+            <div class="row g-4 justify-content-center">
+                <div class="col-12 col-md-6">
+                    <form id="searchForm" class="card shadow-lg w-100" style="max-width:900px;">
+                        <div class="card-body p-5 text-center">
+                            <h1 class="display-5 mb-2">CVE Lookup</h1>
+                            <h2 class="lead mb-4">Search CVE data quickly</h2>
 
-                    <div class="mb-3">
-                        <label for="keywords" class="form-label visually-hidden">Keywords</label>
-                        <input type="text" class="form-control form-control-lg" id="keywords" name="keywords" placeholder="Enter keywords, comma separated">
-                    </div>
+                            <div class="mb-3">
+                                <label for="keywords" class="form-label visually-hidden">Keywords</label>
+                                <input type="text" class="form-control form-control-lg" id="keywords" name="keywords" placeholder="Enter keywords, comma separated">
+                            </div>
 
-                    <div class="mb-4">
-                        <label for="timeRange" class="form-label visually-hidden">Time range</label>
-                        <select class="form-select form-select-lg" id="timeRange" name="time_range">
-                            <option value="30">1 month</option>
-                            <option value="90">3 months</option>
-                            <option value="180">6 months</option>
-                            <option value="365">1 year</option>
-                        </select>
-                    </div>
+                            <div class="mb-4">
+                                <label for="timeRange" class="form-label visually-hidden">Time range</label>
+                                <select class="form-select form-select-lg" id="timeRange" name="time_range">
+                                    <option value="30">1 month</option>
+                                    <option value="90">3 months</option>
+                                    <option value="180">6 months</option>
+                                    <option value="365">1 year</option>
+                                </select>
+                            </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Search</button>
-                    </div>
-                </div>
-            </form>
-
-            <form id="cveForm" class="card shadow-lg w-100" style="max-width:900px;">
-                <div class="card-body p-5 text-center">
-                    <h1 class="display-5 mb-2">CVE Search</h1>
-                    <h2 class="lead mb-4">CVE Identifiers Lookup</h2>
-                    <div id="cveInputsContainer">
-                        <div class="cve-input-group d-flex align-items-center gap-2">
-                            <input type="text" class="form-control cve-input" placeholder="CVE-YYYY-NNNN" pattern="CVE-\d{4}-\d{4,}">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Search</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-search btn-primary mt-2">
-                            Search
-                        </button>
-                    </div>
+                    </form>
                 </div>
-            </form>
+
+                <div class="col-12 col-md-6">
+                    <form id="cveForm" class="card shadow-lg w-100" style="max-width:900px;">
+                        <div class="card-body p-5 text-center">
+                            <h1 class="display-5 mb-2">CVE Search</h1>
+                            <h2 class="lead mb-4">CVE Identifiers Lookup</h2>
+                            <div id="cveInputsContainer">
+                                <div class="cve-input-group d-flex align-items-center gap-2">
+                                    <input type="text" class="form-control form-control-lg cve-input" placeholder="CVE-YYYY-NNNN" pattern="CVE-\d{4}-\d{4,}">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-search btn-primary mt-2">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </main>
 
