@@ -1,6 +1,7 @@
 const cveInputsContainer = document.getElementById('cveInputsContainer');
 const cveFileInput = document.getElementById('cveFileInput');
 const cveForm = document.getElementById('cveForm');
+const clearCVEsBtn = document.getElementById('clearCVEsBtn');
 const cvePattern = /^CVE-\d{4}-\d{4,}$/;
 
 cveInputsContainer.addEventListener('input', function(e) {
@@ -22,7 +23,7 @@ cveInputsContainer.addEventListener('input', function(e) {
     }
 });
 
-function addCveInput(baseValue = "", baseIndex = 0) {
+function addCveInput(baseValue = "", append = false) {
     const inputGroup = document.createElement('div');
     inputGroup.className = 'cve-input-group d-flex align-items-center gap-2';
     inputGroup.innerHTML = `
@@ -34,7 +35,13 @@ function addCveInput(baseValue = "", baseIndex = 0) {
             value="${baseValue}"
           >
         `;
-    cveInputsContainer.insertBefore(inputGroup, cveInputsContainer.childNodes[baseIndex]);
+
+    if (append) {
+        cveInputsContainer.appendChild(inputGroup);
+    } else {
+        cveInputsContainer.insertBefore(inputGroup, cveInputsContainer.firstChild);
+    }
+
     const inputElem = inputGroup.querySelector('.cve-input');
     inputElem.focus();
 
@@ -69,6 +76,11 @@ cveForm.addEventListener('submit', function(e) {
     window.location.href = `results.php?cveIds=${encodeURIComponent(cveInputs.join(','))}`;
 });
 
+clearCVEsBtn.addEventListener('click', function() {
+    cveInputsContainer.innerHTML = '';
+    addCveInput('');
+});
+
 // Load file and populate inputs
 if (cveFileInput) {
     cveFileInput.addEventListener('change', function(e) {
@@ -80,9 +92,6 @@ if (cveFileInput) {
             const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
             const valid = lines.map(l => l.toUpperCase()).filter(l => cvePattern.test(l));
 
-            // Clear current inputs
-            //cveInputsContainer.innerHTML = '';
-
             if (valid.length === 0) {
                 // show one empty input if no valid entries
                 addCveInput('');
@@ -91,7 +100,7 @@ if (cveFileInput) {
             }
 
             valid.forEach(id => {
-                addCveInput(id, 1);
+                addCveInput(id, true);
             });
         };
         reader.readAsText(file);

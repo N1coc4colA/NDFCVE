@@ -64,10 +64,13 @@
                                     <input type="text" class="form-control form-control-lg cve-input" placeholder="CVE-YYYY-NNNN" pattern="CVE-\d{4}-\d{4,}">
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-search btn-primary mt-2">
-                                    Search
-                                </button>
+                            <div class="container text-center">
+                                <div class="row align-items-start gap-2">
+                                    <button type="button" id="clearCVEsBtn" class="btn btn-secondary btn-lg col" aria-label="Clear CVE list">Clear</button>
+                                    <button type="submit" class="btn btn-primary btn-lg col">
+                                        Search
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -80,3 +83,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
+
+
