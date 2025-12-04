@@ -18,9 +18,7 @@
     </div>
   </header>
   <main class="main-content">
-    <div class="container">
       <div id="results" class="row g-4"></div>
-    </div>
   </main>
 
   <div class="modal fade" id="cveModal" tabindex="-1" aria-labelledby="cveModalLabel" aria-hidden="true">
