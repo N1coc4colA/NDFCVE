@@ -1,0 +1,8 @@
+services:
+  webcal:
+    build: .
+    ports:
+      - "80:80"
+
+volumes:
+  webcal-db-data:
