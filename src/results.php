@@ -111,6 +111,27 @@
       const impact = cvss.impactScore || 0;
       const exploitability = cvss.exploitabilityScore || 0;
       
+      const getGradientColor = (value, max = 10) => {
+        const v = Math.min(value, max);
+        let red, green, blue = 0;
+        
+        if (v <= 3.33) {
+          const t = v / 3.33;
+          red = Math.round(255 * t);
+          green = 255;
+        } else if (v <= 6.67) {
+          const t = (v - 3.33) / 3.34;
+          red = 255;
+          green = Math.round(255 - 90 * t);
+        } else {
+          const t = (v - 6.67) / 3.33;
+          red = 255;
+          green = Math.round(165 * (1 - t));
+        }
+        
+        return `rgb(${red}, ${green}, ${blue})`;
+      };
+      
       return `
         <div class="metrics-visual mt-3">
           <div class="metric-bar mb-2">
@@ -119,7 +140,7 @@
               <small><strong>${score}/10</strong></small>
             </div>
             <div class="progress" style="height: 20px;">
-              <div class="progress-bar bg-danger" style="width: ${score * 10}%"></div>
+              <div class="progress-bar" style="width: ${score * 10}%; background-color: ${getGradientColor(score)}"></div>
             </div>
           </div>
           <div class="metric-bar mb-2">
@@ -128,7 +149,7 @@
               <small><strong>${impact.toFixed(1)}/10</strong></small>
             </div>
             <div class="progress" style="height: 15px;">
-              <div class="progress-bar bg-warning" style="width: ${impact * 10}%"></div>
+              <div class="progress-bar" style="width: ${impact * 10}%; background-color: ${getGradientColor(impact)}"></div>
             </div>
           </div>
           <div class="metric-bar">
@@ -137,7 +158,7 @@
               <small><strong>${exploitability.toFixed(1)}/10</strong></small>
             </div>
             <div class="progress" style="height: 15px;">
-              <div class="progress-bar bg-info" style="width: ${exploitability * 10}%"></div>
+              <div class="progress-bar" style="width: ${exploitability * 10}%; background-color: ${getGradientColor(exploitability)}"></div>
             </div>
           </div>
         </div>
@@ -372,6 +393,19 @@
       }
       resultsDiv.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>';
       const cards = [];
+      const totalCards = cveIds.length;
+      
+      let colClass = 'col-12';
+      if (totalCards === 1) {
+        colClass = 'col-12 col-md-8 col-lg-6 mx-auto';
+      } else if (totalCards === 2) {
+        colClass = 'col-12 col-md-6';
+      } else if (totalCards === 3) {
+        colClass = 'col-12 col-md-6 col-lg-4';
+      } else {
+        colClass = 'col-12 col-sm-6 col-lg-4 col-xl-3';
+      }
+
       for (const cveId of cveIds) {
         const [vuln, kevExists] = await Promise.all([
           fetchCve(cveId),
@@ -385,7 +419,7 @@
 
         if (!vuln) {
           cards.push(`
-            <div class="col-12 col-lg-6">
+            <div class="${colClass}">
               <div class="card border-danger h-100">
                 <div class="card-body">
                   <h5 class="card-title text-danger">${cveId}</h5>
@@ -419,7 +453,7 @@
         }
 
         cards.push(`
-          <div class="col-12 col-lg-6">
+          <div class="${colClass}">
             <div class="card h-100 cve-card ${kevExists ? 'border-danger' : ''}">
               <div class="card-header ${kevExists ? 'bg-danger' : 'bg-primary'} text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -437,14 +471,12 @@
                   <a href="https://nvd.nist.gov/vuln/detail/${vuln.cve.id}" target="_blank" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-box-arrow-up-right"></i> NVD
                   </a>
+                  ${buildPocButton(vuln.cve.id)}
                   ${kevExists ? `<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-shield-exclamation"></i> KEV</a>` : ''}
                 </div>
-                <div class="d-flex">
-                  <button type="button" class="btn btn-sm btn-outline-secondary detail-btn" data-cve="${vuln.cve.id}">
-                    <i class="bi bi-arrows-fullscreen"></i> Détails
-                  </button>
-                  ${buildPocButton(vuln.cve.id)}
-                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary detail-btn" data-cve="${vuln.cve.id}">
+                  <i class="bi bi-arrows-fullscreen"></i> Détails
+                </button>
               </div>
             </div>
           </div>
