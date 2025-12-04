@@ -11,9 +11,9 @@
 <body>
   <header class="header">
     <div class="container text-center">
-      <h1>Résultats CVE</h1>
+      <h1>CVE Results</h1>
       <a href="index.php" class="btn btn-outline-primary mt-2">
-        <i class="bi bi-arrow-left"></i> Nouvelle recherche
+        <i class="bi bi-arrow-left"></i> New search
       </a>
     </div>
   </header>
@@ -27,7 +27,7 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="cveModalLabel">Détails CVE</h5>
+          <h5 class="modal-title" id="cveModalLabel">CVE</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="cveModalBody">
@@ -35,7 +35,7 @@
         </div>
         <div class="modal-footer">
           <a id="cveModalNvdLink" href="#" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right"></i> NVD</a>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -111,10 +111,10 @@
       const impact = cvss.impactScore || 0;
       const exploitability = cvss.exploitabilityScore || 0;
       
+      const soften = (c) => Math.round(255 - (255 - c) * 0.6); // mélange avec du blanc
       const getGradientColor = (value, max = 10) => {
         const v = Math.min(value, max);
         let red, green, blue = 0;
-        
         if (v <= 3.33) {
           const t = v / 3.33;
           red = Math.round(255 * t);
@@ -128,8 +128,7 @@
           red = 255;
           green = Math.round(165 * (1 - t));
         }
-        
-        return `rgb(${red}, ${green}, ${blue})`;
+        return `rgb(${soften(red)}, ${soften(green)}, ${soften(blue)})`;
       };
       
       return `
@@ -241,12 +240,12 @@
           <div class="d-flex align-items-start">
             <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
             <div class="flex-grow-1">
-              <strong>Exploit actif (KEV)</strong>
+              <strong>Active exploit (KEV)</strong>
               <div class="mt-2 small">
-                ${kevData.dateAdded ? `<p class="mb-1"><i class="bi bi-calendar-plus"></i> <strong>Ajouté:</strong> ${new Date(kevData.dateAdded).toLocaleDateString('fr-FR')}</p>` : ''}
-                ${kevData.dueDate ? `<p class="mb-1"><i class="bi bi-calendar-check"></i> <strong>Échéance:</strong> ${new Date(kevData.dueDate).toLocaleDateString('fr-FR')}</p>` : ''}
-                ${kevData.vulnerabilityName ? `<p class="mb-1"><i class="bi bi-tag"></i> <strong>Nom:</strong> ${kevData.vulnerabilityName}</p>` : ''}
-                ${kevData.requiredAction ? `<p class="mb-1"><i class="bi bi-shield-exclamation"></i> <strong>Action requise:</strong> ${kevData.requiredAction}</p>` : ''}
+                ${kevData.dateAdded ? `<p class="mb-1"><i class="bi bi-calendar-plus"></i> <strong>Added:</strong> ${new Date(kevData.dateAdded).toLocaleDateString('en-US')}</p>` : ''}
+                ${kevData.dueDate ? `<p class="mb-1"><i class="bi bi-calendar-check"></i> <strong>Due date:</strong> ${new Date(kevData.dueDate).toLocaleDateString('en-US')}</p>` : ''}
+                ${kevData.vulnerabilityName ? `<p class="mb-1"><i class="bi bi-tag"></i> <strong>Name:</strong> ${kevData.vulnerabilityName}</p>` : ''}
+                ${kevData.requiredAction ? `<p class="mb-1"><i class="bi bi-shield-exclamation"></i> <strong>Required action:</strong> ${kevData.requiredAction}</p>` : ''}
                 ${kevData.knownRansomwareCampaignUse ? `<p class="mb-1 text-danger"><i class="bi bi-virus"></i> <strong>Ransomware:</strong> ${kevData.knownRansomwareCampaignUse}</p>` : ''}
                 ${kevData.notes ? `<p class="mb-0"><i class="bi bi-info-circle"></i> <strong>Notes:</strong> ${kevData.notes}</p>` : ''}
               </div>
@@ -257,7 +256,7 @@
     }
 
     function buildAffectedTech(configurations) {
-      if (!configurations || configurations.length === 0) return '<p class="text-muted small">Aucune technologie affectée disponible</p>';
+      if (!configurations || configurations.length === 0) return '<p class="text-muted small">No affected technology available</p>';
       const cpes = [];
       configurations.forEach(config => {
         config.nodes?.forEach(node => {
@@ -273,8 +272,8 @@
       });
       const uniqueCpes = [...new Set(cpes)].slice(0, 10);
       return `
+      <h6 class="mb-2"><i class="bi bi-cpu"></i> Affected Technologies</h6>
         <div class="affected-tech mt-2">
-          <h6 class="text-muted">Technologies affectées:</h6>
           <div class="d-flex flex-wrap gap-1">
             ${uniqueCpes.map(cpe => `<span class="badge bg-secondary">${cpe}</span>`).join('')}
           </div>
@@ -304,20 +303,20 @@
 
     function renderPocResults(pocs, cveId) {
       if (pocs.length === 0) {
-        return `<div class="alert alert-info"><i class="bi bi-info-circle"></i> Aucun PoC trouvé sur GitHub pour ${cveId}</div>`;
+        return `<div class="alert alert-info"><i class="bi bi-info-circle"></i> No PoC found on GitHub for ${cveId}</div>`;
       }
       return `
-        <p class="text-muted mb-3">${pocs.length} résultat(s) trouvé(s) pour <strong>${cveId}</strong></p>
+        <p class="text-muted mb-3">${pocs.length} result(s) found for <strong>${cveId}</strong></p>
         <div class="list-group">
           ${pocs.map(repo => `
             <a href="${repo.html_url}" target="_blank" class="list-group-item list-group-item-action">
               <div class="d-flex w-100 justify-content-between align-items-start">
                 <div>
                   <h6 class="mb-1"><i class="bi bi-folder"></i> ${repo.full_name}</h6>
-                  <p class="mb-1 small text-muted">${repo.description || 'Pas de description'}</p>
+                  <p class="mb-1 small text-muted">${repo.description || 'No description'}</p>
                   <small class="text-muted">
                     <i class="bi bi-code-slash"></i> ${repo.language || 'N/A'}
-                    <span class="ms-2"><i class="bi bi-calendar"></i> ${new Date(repo.updated_at).toLocaleDateString('fr-FR')}</span>
+                    <span class="ms-2"><i class="bi bi-calendar"></i> ${new Date(repo.updated_at).toLocaleDateString('en-US')}</span>
                   </small>
                 </div>
                 <div class="text-end">
@@ -334,22 +333,24 @@
     function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published) {
       return `
         <div class="mb-3">
-          <h4 class="mb-1">${vuln.cve.id} ${kevExists ? '<span class="badge bg-danger ms-2">Exploit actif</span>' : ''}</h4>
-          <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Publié: ${published}</p>
+          ${kevExists ? '<span class="badge bg-danger mb-2">Active exploit</span>' : ''}
+          <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Published: ${published}</p>
           <p>${desc}</p>
         </div>
         <div class="mb-3">
           ${buildMetricsChart(cvssWithScores)}
           ${buildCVSSDetails(cvssData)}
         </div>
-        <div class="mb-3">
-          <h6><i class="bi bi-bug"></i> Faiblesses (CWE)</h6>
-          ${buildCWESection(vuln.cve.weaknesses)}
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-6">
+            <h6><i class="bi bi-bug"></i> Weaknesses (CWE)</h6>
+            ${buildCWESection(vuln.cve.weaknesses)}
+          </div>
+          <div class="col-12 col-md-6">
+            ${buildAffectedTech(vuln.cve.configurations)}
+          </div>
         </div>
         ${buildKEVAlert(kevData)}
-        <div class="mb-3">
-          ${buildAffectedTech(vuln.cve.configurations)}
-        </div>
       `;
     }
 
@@ -360,9 +361,11 @@
       const modal = new bootstrap.Modal(document.getElementById('cveModal'));
       const body = document.getElementById('cveModalBody');
       const nvdLink = document.getElementById('cveModalNvdLink');
+      const modalTitle = document.getElementById('cveModalLabel');
       const record = vulnStore[cveId];
       if (!record) return;
       const { vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published } = record;
+      modalTitle.textContent = vuln.cve.id;
       body.innerHTML = renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published);
       nvdLink.href = `https://nvd.nist.gov/vuln/detail/${vuln.cve.id}`;
       modal.show();
@@ -375,8 +378,8 @@
         const modalBody = document.getElementById('pocModalBody');
         const modalLabel = document.getElementById('pocModalLabel');
         
-        modalLabel.innerHTML = `<i class="bi bi-github"></i> PoCs GitHub - ${cveId}`;
-        modalBody.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Recherche en cours...</p></div>';
+        modalLabel.innerHTML = `<i class="bi bi-github"></i> GitHub PoCs - ${cveId}`;
+        modalBody.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Searching...</p></div>';
         
         const modal = new bootstrap.Modal(document.getElementById('pocModal'));
         modal.show();
@@ -388,7 +391,7 @@
 
     async function showResults() {
       if (cveIds.length === 0) {
-        resultsDiv.innerHTML = '<div class="col-12"><div class="alert alert-warning">Aucun identifiant CVE fourni.</div></div>';
+        resultsDiv.innerHTML = '<div class="col-12"><div class="alert alert-warning">No CVE identifier provided.</div></div>';
         return;
       }
       resultsDiv.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>';
@@ -423,7 +426,7 @@
               <div class="card border-danger h-100">
                 <div class="card-body">
                   <h5 class="card-title text-danger">${cveId}</h5>
-                  <p class="card-text">Aucune donnée trouvée pour ce CVE.</p>
+                  <p class="card-text">No data found for this CVE.</p>
                   ${kevData ? buildKEVAlert(kevData) : ''}
                 </div>
                 <div class="card-footer bg-light">
@@ -434,8 +437,8 @@
           `);
           continue;
         }
-        const desc = vuln?.cve.descriptions?.find(d => d.lang === 'en')?.value || 'Pas de description disponible';
-        const published = vuln?.cve.published ? new Date(vuln.cve.published).toLocaleDateString('fr-FR') : 'N/A';
+        const desc = vuln?.cve.descriptions?.find(d => d.lang === 'en')?.value || 'No description available';
+        const published = vuln?.cve.published ? new Date(vuln.cve.published).toLocaleDateString('en-US') : 'N/A';
         const cvssV3 = vuln?.cve.metrics?.cvssMetricV31?.[0] || vuln?.cve.metrics?.cvssMetricV3?.[0];
         const cvssV2 = vuln?.cve.metrics?.cvssMetricV2?.[0];
         const cvssData = cvssV3?.cvssData || cvssV2?.cvssData;

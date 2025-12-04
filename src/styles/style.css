@@ -1,8 +1,12 @@
 :root {
-  --primary-color: #2563eb;
-  --gray-dark: #1f2937;
-  --gray-light: #f3f4f6;
-  --white: #ffffff;
+  --primary-color: #1e40af;
+  --gray-dark: #111827;
+  --gray-light: #f8fafc;
+  --border: #e5e7eb;
+}
+
+html {
+  font-size: 133%;
 }
 
 body {
@@ -10,25 +14,25 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  color: var(--gray-dark);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 .header {
   background-color: var(--white);
-  border-bottom: 2px solid var(--primary-color);
-  padding: 2rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
 }
 
 .header h1 {
-  color: var(--gray-dark);
-  font-weight: 700;
+  font-weight: 600;
   margin: 0;
 }
 
 .main-content {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 2rem 1rem;
 }
@@ -36,32 +40,33 @@ body {
 .cve-form-container {
   background-color: var(--white);
   border-radius: 12px;
-  padding: 3rem 2rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  max-width: 600px;
+  padding: 2rem 1.75rem;
+  border: 1px solid var(--border);
+  max-width: 640px;
   width: 100%;
 }
 
 .cve-form-container h2 {
-  color: var(--gray-dark);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
 }
 
 .cve-input-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .cve-input {
-  border: 2px solid var(--gray-light);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
   font-size: 1rem;
+  background-color: var(--gray-light);
 }
 
 .cve-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.08);
 }
 
 .cve-input::placeholder {
@@ -72,43 +77,54 @@ body {
   background-color: var(--primary-color);
   color: var(--white);
   border: none;
-  border-radius: 8px;
-  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  padding: 0.8rem;
   font-size: 1rem;
   font-weight: 600;
   width: 100%;
+  letter-spacing: 0.01em;
 }
 
 .remove-btn {
-  background-color: transparent;
+  background: none;
   border: none;
   color: #6b7280;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.25rem;
 }
 
-/* Styles pour les cartes CVE */
 .cve-card {
-  border: 2px solid var(--gray-light);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--white);
 }
 
-.cve-card .card-header {
+.cve-card .card-header,
+.modal-header {
   font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 1rem;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.cve-card .card-body {
+  padding: 1rem;
 }
 
 .metric-bar .progress {
   border-radius: 10px;
-  overflow: hidden;
+  background: #e5e7eb;
 }
 
 .cvss-details {
-  background-color: var(--gray-light);
-  padding: 0.75rem;
-  border-radius: 8px;
+  background-color: #eef2f7;
+  padding: 0.85rem;
+  border-radius: 10px;
 }
 
 .cvss-row {
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .cvss-row:last-child {
@@ -116,13 +132,13 @@ body {
 }
 
 .cvss-label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 .cvss-value {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .cvss-indicator {
@@ -130,48 +146,29 @@ body {
   height: 10px;
   border-radius: 50%;
   display: inline-block;
-  box-shadow: 0 0 4px currentColor;
+  box-shadow: none;
 }
 
-.cvss-indicator.bg-danger {
-  box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
-}
-
-.cvss-indicator.bg-warning {
-  box-shadow: 0 0 6px rgba(255, 193, 7, 0.6);
-}
-
-.cvss-indicator.bg-success {
-  box-shadow: 0 0 6px rgba(25, 135, 84, 0.6);
-}
-
-.cwe-section .badge {
-  margin-bottom: 0.25rem;
-}
-
-.affected-tech .badge {
-  font-size: 0.75rem;
-  padding: 0.35rem 0.5rem;
-}
-
+.cwe-section .badge,
+.affected-tech .badge,
 #pocModal .badge {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+
+.modal-content {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.modal-dialog.modal-xl {
+  max-width: 600px;
 }
 
 @media (max-width: 768px) {
-  .cve-form-container {
-    padding: 2rem 1.5rem;
-  }
-
-  .header h1 {
-    font-size: 1.75rem;
-  }
-
-  .cve-card .card-header h5 {
-    font-size: 1rem;
-  }
-
-  .metric-bar {
-    font-size: 0.85rem;
-  }
+  .main-content { padding: 1.25rem 0.75rem; }
+  .cve-form-container { padding: 1.5rem 1.25rem; }
+  .header h1 { font-size: 1.4rem; }
 }
