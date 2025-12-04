@@ -20,23 +20,7 @@
   </head>
   <body page-name="index">
     <include href="templates/header.html"></include>
-    <main class="pt-5 min-vh-100 d-flex justify-content-between flex-column">
-      <div class="container mt-5 pt-5">
-        <div class="row mb-2">
-          <img src="assets/icons/favicon-256.svg" width="256" height="256" class="col-12 col-sm-6 d-inline-block align-center" alt="">
-          <h2 class="col-12 col-sm-6 align-center text-center align-content-center pt-5">Bienvenue sur WebCal !</h2>
-        </div>
-        <div class="d-flex flex-column flex-sm-row justify-content-center mt-5">
-          <a type="button" class="btn btn-primary m-2" href="connect.php">
-            <i class="bi bi-person-bounding-box"></i>
-            Se connecter
-          </a>
-          <a type="button" class="btn btn-secondary m-2" href="register.php">
-            <i class="bi bi-person-add"></i>
-            Créer un compte
-          </a>
-        </div>
-      </div>
+    <main>
     </main>
     <include href="templates/footer.html"></include>
     <script src="js/script.js"></script>
