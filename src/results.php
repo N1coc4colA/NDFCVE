@@ -23,7 +23,24 @@
     </div>
   </main>
 
-  <!-- Modal pour les PoCs -->
+  <div class="modal fade" id="cveModal" tabindex="-1" aria-labelledby="cveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="cveModalLabel">Détails CVE</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="cveModalBody">
+          <div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>
+        </div>
+        <div class="modal-footer">
+          <a id="cveModalNvdLink" href="#" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right"></i> NVD</a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal fade" id="pocModal" tabindex="-1" aria-labelledby="pocModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
@@ -47,6 +64,7 @@
     const params = new URLSearchParams(window.location.search);
     const cveIds = params.get('cveIds') ? params.get('cveIds').split(',') : [];
     const resultsDiv = document.getElementById('results');
+    const vulnStore = {};
 
     async function fetchCve(cveId) {
       const url = `https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=${encodeURIComponent(cveId)}`;
@@ -131,19 +149,13 @@
       
       const getColorClass = (metric, value) => {
         const colors = {
-          // NETWORK = plus dangereux (accessible à distance), PHYSICAL = moins dangereux
           attackVector: { 'NETWORK': 'danger', 'ADJACENT_NETWORK': 'warning', 'LOCAL': 'warning', 'PHYSICAL': 'success' },
-          // LOW complexity = plus facile à exploiter = plus dangereux
           attackComplexity: { 'LOW': 'danger', 'HIGH': 'success' },
-          // NONE = pas besoin de privilèges = plus dangereux
           privilegesRequired: { 'NONE': 'danger', 'LOW': 'warning', 'HIGH': 'success' },
-          // NONE = pas besoin d'interaction = plus dangereux
           userInteraction: { 'NONE': 'danger', 'REQUIRED': 'success' },
-          // HIGH impact = plus dangereux
           confidentialityImpact: { 'HIGH': 'danger', 'LOW': 'warning', 'NONE': 'success' },
           integrityImpact: { 'HIGH': 'danger', 'LOW': 'warning', 'NONE': 'success' },
           availabilityImpact: { 'HIGH': 'danger', 'LOW': 'warning', 'NONE': 'success' },
-          // Support CVSS v2 values
           scope: { 'CHANGED': 'danger', 'UNCHANGED': 'success' }
         };
         return colors[metric]?.[value] || 'secondary';
@@ -188,7 +200,6 @@
       if (!weaknesses || weaknesses.length === 0) return '<p class="text-muted small">Aucune CWE disponible</p>';
       const cweList = weaknesses.flatMap(w => w.description || [])
         .filter(d => {
-          // Filtre les CWE non valides (NVD-CWE-noinfo, NVD-CWE-Other, etc.)
           const value = d.value || '';
           return !value.startsWith('NVD-CWE-') && value.match(/^CWE-\d+$/);
         })
@@ -209,7 +220,7 @@
           <div class="d-flex align-items-start">
             <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
             <div class="flex-grow-1">
-              <strong>⚠️ Exploit actif (KEV)</strong>
+              <strong>Exploit actif (KEV)</strong>
               <div class="mt-2 small">
                 ${kevData.dateAdded ? `<p class="mb-1"><i class="bi bi-calendar-plus"></i> <strong>Ajouté:</strong> ${new Date(kevData.dateAdded).toLocaleDateString('fr-FR')}</p>` : ''}
                 ${kevData.dueDate ? `<p class="mb-1"><i class="bi bi-calendar-check"></i> <strong>Échéance:</strong> ${new Date(kevData.dueDate).toLocaleDateString('fr-FR')}</p>` : ''}
@@ -299,7 +310,43 @@
       `;
     }
 
-    // Event listener pour les boutons PoC
+    function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published) {
+      return `
+        <div class="mb-3">
+          <h4 class="mb-1">${vuln.cve.id} ${kevExists ? '<span class="badge bg-danger ms-2">Exploit actif</span>' : ''}</h4>
+          <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Publié: ${published}</p>
+          <p>${desc}</p>
+        </div>
+        <div class="mb-3">
+          ${buildMetricsChart(cvssWithScores)}
+          ${buildCVSSDetails(cvssData)}
+        </div>
+        <div class="mb-3">
+          <h6><i class="bi bi-bug"></i> Faiblesses (CWE)</h6>
+          ${buildCWESection(vuln.cve.weaknesses)}
+        </div>
+        ${buildKEVAlert(kevData)}
+        <div class="mb-3">
+          ${buildAffectedTech(vuln.cve.configurations)}
+        </div>
+      `;
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.detail-btn');
+      if (!btn) return;
+      const cveId = btn.dataset.cve;
+      const modal = new bootstrap.Modal(document.getElementById('cveModal'));
+      const body = document.getElementById('cveModalBody');
+      const nvdLink = document.getElementById('cveModalNvdLink');
+      const record = vulnStore[cveId];
+      if (!record) return;
+      const { vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published } = record;
+      body.innerHTML = renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published);
+      nvdLink.href = `https://nvd.nist.gov/vuln/detail/${vuln.cve.id}`;
+      modal.show();
+    });
+
     document.addEventListener('click', async (e) => {
       if (e.target.closest('.poc-btn')) {
         const btn = e.target.closest('.poc-btn');
@@ -353,22 +400,24 @@
           `);
           continue;
         }
-        const desc = vuln.cve.descriptions?.find(d => d.lang === 'en')?.value || 'Pas de description disponible';
-        const published = vuln.cve.published ? new Date(vuln.cve.published).toLocaleDateString('fr-FR') : 'N/A';
-        const cvssV3 = vuln.cve.metrics?.cvssMetricV31?.[0] || vuln.cve.metrics?.cvssMetricV3?.[0];
-        const cvssV2 = vuln.cve.metrics?.cvssMetricV2?.[0];
+        const desc = vuln?.cve.descriptions?.find(d => d.lang === 'en')?.value || 'Pas de description disponible';
+        const published = vuln?.cve.published ? new Date(vuln.cve.published).toLocaleDateString('fr-FR') : 'N/A';
+        const cvssV3 = vuln?.cve.metrics?.cvssMetricV31?.[0] || vuln?.cve.metrics?.cvssMetricV3?.[0];
+        const cvssV2 = vuln?.cve.metrics?.cvssMetricV2?.[0];
         const cvssData = cvssV3?.cvssData || cvssV2?.cvssData;
         const impactScore = cvssV3?.impactScore || cvssV2?.impactScore || 0;
         const exploitabilityScore = cvssV3?.exploitabilityScore || cvssV2?.exploitabilityScore || 0;
         const severity = cvssData?.baseSeverity || cvssV2?.baseSeverity || 'N/A';
-        
-        // Combine CVSS data with impact/exploitability scores
-        const cvssWithScores = cvssData ? {
-          ...cvssData,
-          impactScore,
-          exploitabilityScore
-        } : null;
-        
+        const cvssWithScores = cvssData ? { ...cvssData, impactScore, exploitabilityScore } : null;
+
+        if (vuln) {
+          vulnStore[vuln.cve.id] = { vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published };
+        }
+
+        if (!vuln) {
+          continue;
+        }
+
         cards.push(`
           <div class="col-12 col-lg-6">
             <div class="card h-100 cve-card ${kevExists ? 'border-danger' : ''}">
@@ -380,25 +429,22 @@
                 ${getSeverityBadge(severity)}
               </div>
               <div class="card-body">
-                <p class="card-text">${desc}</p>
-                <hr>
-                <div class="cve-meta">
-                  <p class="mb-2"><strong><i class="bi bi-calendar3"></i> Publié:</strong> ${published}</p>
-                  ${buildMetricsChart(cvssWithScores)}
-                  ${buildCVSSDetails(cvssData)}
-                  <hr>
-                  <h6 class="mt-3"><i class="bi bi-bug"></i> Faiblesses (CWE):</h6>
-                  ${buildCWESection(vuln.cve.weaknesses)}
-                  ${buildKEVAlert(kevData)}
-                  ${buildAffectedTech(vuln.cve.configurations)}
-                </div>
+                <p class="text-muted mb-1"><i class="bi bi-calendar3"></i> ${published}</p>
+                <p class="card-text">${desc.substring(0, 160)}${desc.length > 160 ? '…' : ''}</p>
               </div>
-              <div class="card-footer bg-light">
-                <a href="https://nvd.nist.gov/vuln/detail/${vuln.cve.id}" target="_blank" class="btn btn-sm btn-outline-primary">
-                  <i class="bi bi-box-arrow-up-right"></i> NVD
-                </a>
-                ${kevExists ? `<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-shield-exclamation"></i> KEV</a>` : ''}
-                ${buildPocButton(vuln.cve.id)}
+              <div class="card-footer bg-light d-flex justify-content-between">
+                <div>
+                  <a href="https://nvd.nist.gov/vuln/detail/${vuln.cve.id}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-box-arrow-up-right"></i> NVD
+                  </a>
+                  ${kevExists ? `<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-shield-exclamation"></i> KEV</a>` : ''}
+                </div>
+                <div class="d-flex">
+                  <button type="button" class="btn btn-sm btn-outline-secondary detail-btn" data-cve="${vuln.cve.id}">
+                    <i class="bi bi-arrows-fullscreen"></i> Détails
+                  </button>
+                  ${buildPocButton(vuln.cve.id)}
+                </div>
               </div>
             </div>
           </div>
