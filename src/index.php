@@ -29,7 +29,7 @@
 
                             <div class="mb-3">
                                 <label for="keywords" class="form-label visually-hidden">Keywords</label>
-                                <input type="text" class="form-control form-control-lg" id="keywords" name="keywords" placeholder="Enter keywords, comma separated">
+                                <input type="text" class="form-control form-control-lg cve-input" id="keywords" name="keywords" placeholder="Enter keywords, comma separated">
                             </div>
 
                             <div class="mb-4">
