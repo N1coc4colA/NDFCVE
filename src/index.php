@@ -88,6 +88,12 @@
 
       cveForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        const cveInputs = Array.from(cveInputsContainer.querySelectorAll('.cve-input'))
+          .map(input => input.value.trim())
+          .filter(val => cvePattern.test(val));
+        if (cveInputs.length === 0) return;
+        // Redirige vers results.php avec les CVE en paramètre GET
+        window.location.href = `results.php?cveIds=${encodeURIComponent(cveInputs.join(','))}`;
       });
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">

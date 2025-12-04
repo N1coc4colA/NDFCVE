@@ -100,6 +100,52 @@ body {
   color: #ef4444;
 }
 
+/* Styles pour les cartes CVE */
+.cve-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid var(--gray-light);
+}
+
+.cve-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.cve-card .card-header {
+  font-weight: 600;
+}
+
+.metric-bar .progress {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cvss-details {
+  background-color: var(--gray-light);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.cwe-section .badge {
+  margin-bottom: 0.25rem;
+}
+
+.cwe-badge {
+  transition: all 0.2s ease;
+}
+
+.cwe-badge:hover {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.affected-tech .badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.5rem;
+}
+
 @media (max-width: 768px) {
   .cve-form-container {
     padding: 2rem 1.5rem;
@@ -107,5 +153,13 @@ body {
 
   .header h1 {
     font-size: 1.75rem;
+  }
+
+  .cve-card .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .metric-bar {
+    font-size: 0.85rem;
   }
 }
