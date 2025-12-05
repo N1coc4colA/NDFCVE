@@ -178,7 +178,7 @@ if (cveFileInput) {
             if (valid.length === 0) {
                 // show one empty input if no valid entries
                 addCveInput('');
-                alert('No valid CVE identifiers found in the file.');
+                alert('Aucun identifiant CVE valide trouvé dans le fichier.');
                 return;
             }
 

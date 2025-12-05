@@ -39,7 +39,7 @@ function buildCWESection(weaknesses) {
 }
 
 function buildAffectedTech(configurations) {
-    if (!configurations || configurations.length === 0) return '<p class="text-muted small">No affected technology available</p>';
+    if (!configurations || configurations.length === 0) return '<p class="text-muted small">Aucun secteur assigné</p>';
     const cpes = [];
     configurations.forEach(config => {
         config.nodes?.forEach(node => {
@@ -173,7 +173,7 @@ function buildMetricsChart(cvss) {
         <div class="metrics-visual mt-3">
           <div class="metric-bar mb-2">
             <div class="d-flex justify-content-between mb-1">
-              <small><strong>CVSS Score</strong></small>
+              <small><strong>Score CVSS</strong></small>
               <small><strong>${score}/10</strong></small>
             </div>
             <div class="progress" style="height: 20px;">
@@ -220,13 +220,13 @@ function buildCVSSDetails(cvss) {
     };
 
     const metrics = [
-        { key: 'attackVector', label: 'Attack Vector', abbr: 'AV', icon: 'bi-globe' },
-        { key: 'attackComplexity', label: 'Attack Complexity', abbr: 'AC', icon: 'bi-gear' },
-        { key: 'privilegesRequired', label: 'Privileges Required', abbr: 'PR', icon: 'bi-person-lock' },
-        { key: 'userInteraction', label: 'User Interaction', abbr: 'UI', icon: 'bi-cursor' },
-        { key: 'confidentialityImpact', label: 'Confidentiality', abbr: 'C', icon: 'bi-eye-slash' },
-        { key: 'integrityImpact', label: 'Integrity', abbr: 'I', icon: 'bi-shield-lock' },
-        { key: 'availabilityImpact', label: 'Availability', abbr: 'A', icon: 'bi-power' }
+        { key: 'attackVector', label: "Vecteur d'Attaque", abbr: 'VA', icon: 'bi-globe' },
+        { key: 'attackComplexity', label: "Complexité d'Attaque", abbr: 'CA', icon: 'bi-gear' },
+        { key: 'privilegesRequired', label: 'Privilèges Requis', abbr: 'PR', icon: 'bi-person-lock' },
+        { key: 'userInteraction', label: 'Interaction Utilisateur', abbr: 'IU', icon: 'bi-cursor' },
+        { key: 'confidentialityImpact', label: 'Confidentialité', abbr: 'C', icon: 'bi-eye-slash' },
+        { key: 'integrityImpact', label: 'Integrité', abbr: 'I', icon: 'bi-shield-lock' },
+        { key: 'availabilityImpact', label: 'Disponibilité', abbr: 'D', icon: 'bi-power' }
     ];
 
     const rows = metrics.map(m => {
@@ -257,8 +257,8 @@ function buildCVSSDetails(cvss) {
 function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published) {
     return `
         <div class="mb-3">
-          ${kevExists ? '<span class="badge bg-danger mb-2">Active exploit</span>' : ''}
-          <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Published: ${published}</p>
+          ${kevExists ? '<span class="badge bg-danger mb-2">Exploit actif</span>' : ''}
+          <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Publié le : ${published}</p>
           <p>${desc}</p>
         </div>
         <div class="mb-3">
@@ -267,7 +267,7 @@ function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData,
         </div>
         <div class="col mb-3">
           <div class="row mb-3">
-            <h6><i class="bi bi-bug"></i> Weaknesses (CWE)</h6>
+            <h6><i class="bi bi-bug"></i> Faiblesses (CWE)</h6>
             ${buildCWESection(vuln.cve.weaknesses)}
           </div>
           <div class="row mb-3">

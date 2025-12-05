@@ -32,7 +32,7 @@ async function showResults() {
               <div class="card border-danger h-100">
                 <div class="card-body">
                   <h5 class="card-title text-danger">${cveId}</h5>
-                  <p class="card-text">No data found for this CVE.</p>
+                  <p class="card-text">Aucune donnée trouvée pour cette CVE.</p>
                   ${kevData ? buildKEVAlert(kevData) : ''}
                 </div>
                 <div class="card-footer bg-light">

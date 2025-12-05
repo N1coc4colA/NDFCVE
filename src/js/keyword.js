@@ -341,7 +341,7 @@ function displayCVSSTrendChart(vulnerabilities) {
                 x: {
                     title: {
                         display: true,
-                        text: 'Date'
+                        text: 'Publication'
                     },
                     ticks: {
                         maxTicksLimit: 10
