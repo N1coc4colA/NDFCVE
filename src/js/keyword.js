@@ -33,7 +33,7 @@ async function performAnalysis(keyword, timeRange) {
     resultsSection.style.display = 'block';
 
     // Show loading animation
-    showLoadingAnimation();
+    showLoadingAnimation("Analyzing CVEs...", "Fetching and enriching vulnerability data");
 
     // Reset stats
     resetStats();
@@ -457,33 +457,6 @@ function getSeverityClass(severity) {
         'NONE': 'bg-light text-dark'
     };
     return classes[severity] || 'bg-secondary';
-}
-
-// Show loading animation
-function showLoadingAnimation() {
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.id = 'loadingOverlay';
-    loadingOverlay.className = 'loading-overlay';
-    loadingOverlay.innerHTML = `
-        <div class="loading-content">
-            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-3 text-primary fw-bold">Analyzing CVEs...</p>
-            <p class="text-muted small">Fetching and enriching vulnerability data</p>
-        </div>
-    `;
-    document.body.appendChild(loadingOverlay);
-    document.body.style.overflow = "hidden";
-}
-
-// Hide loading animation
-function hideLoadingAnimation() {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay) {
-        loadingOverlay.remove();
-    }
-    document.body.style.overflow = "visible";
 }
 
 // Show CVE details in modal

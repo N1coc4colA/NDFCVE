@@ -64,6 +64,8 @@
         </div>
       </div>
     </body>
+    <script src="js/loader.js"></script>
+    <script src="js/cveinfo.js"></script>
     <script src="js/results.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </html>
