@@ -474,6 +474,7 @@ function showLoadingAnimation() {
         </div>
     `;
     document.body.appendChild(loadingOverlay);
+    document.body.style.overflow = "hidden";
 }
 
 // Hide loading animation
@@ -482,6 +483,7 @@ function hideLoadingAnimation() {
     if (loadingOverlay) {
         loadingOverlay.remove();
     }
+    document.body.style.overflow = "visible";
 }
 
 // Show CVE details in modal
