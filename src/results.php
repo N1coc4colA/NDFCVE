@@ -7,14 +7,50 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/style.css">
+  <style>
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(5px);
+    }
+
+    .loading-content {
+      text-align: center;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="header">
     <div class="container text-center">
       <h1>CVE Results</h1>
-      <a href="index.php" class="btn btn-outline-primary mt-2">
-        <i class="bi bi-arrow-left"></i> New search
-      </a>
+      <div class="mt-2">
+        <a href="index.php" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-left"></i> New search
+        </a>
+        <a href="keyword.php" class="btn btn-outline-success ms-2">
+          <i class="bi bi-search"></i> Keyword Analysis
+        </a>
+      </div>
     </div>
   </header>
   <main class="main-content container">
@@ -339,12 +375,12 @@
           ${buildMetricsChart(cvssWithScores)}
           ${buildCVSSDetails(cvssData)}
         </div>
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-md-6">
+        <div class="col mb-3">
+          <div class="row mb-3">
             <h6><i class="bi bi-bug"></i> Weaknesses (CWE)</h6>
             ${buildCWESection(vuln.cve.weaknesses)}
           </div>
-          <div class="col-12 col-md-6">
+          <div class="row mb-3">
             ${buildAffectedTech(vuln.cve.configurations)}
           </div>
         </div>
@@ -387,12 +423,40 @@
       }
     });
 
+    // Show loading animation
+    function showLoadingAnimation() {
+      const loadingOverlay = document.createElement('div');
+      loadingOverlay.id = 'loadingOverlay';
+      loadingOverlay.className = 'loading-overlay';
+      loadingOverlay.innerHTML = `
+        <div class="loading-content">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3 text-primary fw-bold">Loading CVE Details...</p>
+          <p class="text-muted small">Fetching vulnerability information</p>
+        </div>
+      `;
+      document.body.appendChild(loadingOverlay);
+    }
+
+    // Hide loading animation
+    function hideLoadingAnimation() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.remove();
+      }
+    }
+
     async function showResults() {
       if (cveIds.length === 0) {
         resultsDiv.innerHTML = '<div class="col-12"><div class="alert alert-warning">No CVE identifier provided.</div></div>';
         return;
       }
-      resultsDiv.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>';
+
+      // Show loading animation
+      showLoadingAnimation();
+
       const cards = [];
       const totalCards = cveIds.length;
       
@@ -475,6 +539,9 @@
         `);
       }
       resultsDiv.innerHTML = cards.join('');
+
+      // Hide loading animation
+      hideLoadingAnimation();
     }
 
     showResults();

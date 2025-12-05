@@ -32,6 +32,9 @@ async function performAnalysis(keyword, timeRange) {
     // Show results section
     resultsSection.style.display = 'block';
 
+    // Show loading animation
+    showLoadingAnimation();
+
     // Reset stats
     resetStats();
 
@@ -40,6 +43,7 @@ async function performAnalysis(keyword, timeRange) {
         const vulnerabilities = await fetchCVEsByKeyword(keyword, timeRange);
 
         if (vulnerabilities.length === 0) {
+            hideLoadingAnimation();
             alert('Aucune CVE trouvée pour ce mot-clé et cette période.');
             return;
         }
@@ -48,6 +52,9 @@ async function performAnalysis(keyword, timeRange) {
 
         // Enrich with EPSS and KEV data
         await enrichVulnerabilities(vulnerabilities);
+
+        // Hide loading animation
+        hideLoadingAnimation();
 
         // Calculate and display statistics
         calculateStats(vulnerabilities);
@@ -59,6 +66,7 @@ async function performAnalysis(keyword, timeRange) {
         displayTopVulnerabilities(vulnerabilities);
 
     } catch (error) {
+        hideLoadingAnimation();
         console.error('Error during analysis:', error);
         alert('Erreur lors de l\'analyse. Veuillez réessayer.');
     }
@@ -449,6 +457,31 @@ function getSeverityClass(severity) {
         'NONE': 'bg-light text-dark'
     };
     return classes[severity] || 'bg-secondary';
+}
+
+// Show loading animation
+function showLoadingAnimation() {
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.className = 'loading-overlay';
+    loadingOverlay.innerHTML = `
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-primary fw-bold">Analyzing CVEs...</p>
+            <p class="text-muted small">Fetching and enriching vulnerability data</p>
+        </div>
+    `;
+    document.body.appendChild(loadingOverlay);
+}
+
+// Hide loading animation
+function hideLoadingAnimation() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.remove();
+    }
 }
 
 // Show CVE details in modal
