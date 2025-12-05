@@ -19,15 +19,13 @@ body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
-.header {
-  background-color: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 1.25rem 0;
-}
-
-.header h1 {
-  font-weight: 600;
-  margin: 0;
+.navbar {
+    top: 0;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    backdrop-filter: blur(5px);
+    background-color: rgba(var(--bs-tertiary-bg-rgb), 0.8);
 }
 
 .main-content {
