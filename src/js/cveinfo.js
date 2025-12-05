@@ -74,7 +74,7 @@ async function fetchCve(cveId) {
 
 async function fetchKevDetails(cveId) {
     try {
-        const resp = await fetch(`https://kevin.gtfkd.com/kev/${encodeURIComponent(cveId)}`);
+        const resp = await fetch(`api/kev_details_proxy?cve=${encodeURIComponent(cveId)}`);
         if (!resp.ok) return null;
         return await resp.json();
     } catch {
@@ -280,7 +280,7 @@ function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData,
 
 async function checkKevExists(cveId) {
     try {
-        const resp = await fetch(`https://kevin.gtfkd.com/kev/exists?cve=${encodeURIComponent(cveId)}`);
+        const resp = await fetch(`api/kev_proxy.php?cve=${encodeURIComponent(cveId)}`);
         if (!resp.ok) return false;
         const data = await resp.json();
         return data.exists === true;
