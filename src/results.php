@@ -17,7 +17,7 @@
       </a>
     </div>
   </header>
-  <main class="main-content">
+  <main class="main-content container">
       <div id="results" class="row g-4"></div>
   </main>
 
@@ -396,16 +396,7 @@
       const cards = [];
       const totalCards = cveIds.length;
       
-      let colClass = 'col-12';
-      if (totalCards === 1) {
-        colClass = 'col-12 col-md-8 col-lg-6 mx-auto';
-      } else if (totalCards === 2) {
-        colClass = 'col-12 col-md-6';
-      } else if (totalCards === 3) {
-        colClass = 'col-12 col-md-6 col-lg-4';
-      } else {
-        colClass = 'col-12 col-sm-6 col-lg-4 col-xl-3';
-      }
+      let colClass = 'col-12 col-lg-6 col-xl-4';
 
       for (const cveId of cveIds) {
         const [vuln, kevExists] = await Promise.all([
