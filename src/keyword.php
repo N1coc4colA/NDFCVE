@@ -154,31 +154,12 @@
                 </div>
             </div>
         </main>
-
-        <div class="modal fade" id="cveModal" tabindex="-1" aria-labelledby="cveModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="cveModalLabel">CVE Details</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="cveModalBody">
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a id="cveModalNvdLink" href="#" target="_blank" class="btn btn-outline-primary">
-                            <i class="bi bi-box-arrow-up-right"></i> View on NVD
-                        </a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="js/loader.js"></script>
-        <script src="js/keyword.js"></script>
+        <include href="templates/modals.html"/>
     </body>
+
+    <script src="js/script.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/cveinfo.js"></script>
+    <script src="js/keyword.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

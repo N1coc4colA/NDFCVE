@@ -1,4 +1,5 @@
 
+const vulnStore = {};
 
 async function fetchGitHubPocs(cveId) {
     try {
@@ -277,17 +278,33 @@ function renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData,
       `;
 }
 
+async function checkKevExists(cveId) {
+    try {
+        const resp = await fetch(`https://kevin.gtfkd.com/kev/exists?cve=${encodeURIComponent(cveId)}`);
+        if (!resp.ok) return false;
+        const data = await resp.json();
+        return data.exists === true;
+    } catch {
+        return false;
+    }
+}
 
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('.detail-btn');
-    if (!btn) return;
+    if (!btn) {
+        return;
+    }
+
     const cveId = btn.dataset.cve;
     const modal = new bootstrap.Modal(document.getElementById('cveModal'));
     const body = document.getElementById('cveModalBody');
     const nvdLink = document.getElementById('cveModalNvdLink');
     const modalTitle = document.getElementById('cveModalLabel');
     const record = vulnStore[cveId];
-    if (!record) return;
+    if (!record) {
+        return;
+    }
+
     const { vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published } = record;
     modalTitle.textContent = vuln.cve.id;
     body.innerHTML = renderDetailContent(vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published);

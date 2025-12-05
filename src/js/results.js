@@ -1,18 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const cveIds = params.get('cveIds') ? params.get('cveIds').split(',') : [];
 const resultsDiv = document.getElementById('results');
-const vulnStore = {};
-
-async function checkKevExists(cveId) {
-    try {
-        const resp = await fetch(`https://kevin.gtfkd.com/kev/exists?cve=${encodeURIComponent(cveId)}`);
-        if (!resp.ok) return false;
-        const data = await resp.json();
-        return data.exists === true;
-    } catch {
-        return false;
-    }
-}
 
 async function showResults() {
     if (cveIds.length === 0) {

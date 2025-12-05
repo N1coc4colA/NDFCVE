@@ -130,6 +130,25 @@ async function enrichVulnerabilities(vulnerabilities) {
                 console.warn(`KEV check failed for ${cveId}`);
                 vuln.inKEV = false;
             }
+
+            const kevExists = await Promise.resolve(checkKevExists(cveId));
+
+            let kevData = null;
+            if (kevExists) {
+                kevData = await fetchKevDetails(cveId);
+            }
+            const desc = vuln?.cve.descriptions?.find(d => d.lang === 'en')?.value || 'No description available';
+            const published = vuln?.cve.published ? new Date(vuln.cve.published).toLocaleDateString('en-US') : 'N/A';
+            const cvssV3 = vuln?.cve.metrics?.cvssMetricV31?.[0] || vuln?.cve.metrics?.cvssMetricV3?.[0];
+            const cvssV2 = vuln?.cve.metrics?.cvssMetricV2?.[0];
+            const cvssData = cvssV3?.cvssData || cvssV2?.cvssData;
+            const impactScore = cvssV3?.impactScore || cvssV2?.impactScore || 0;
+            const exploitabilityScore = cvssV3?.exploitabilityScore || cvssV2?.exploitabilityScore || 0;
+            const cvssWithScores = cvssData ? { ...cvssData, impactScore, exploitabilityScore } : null;
+
+            if (vuln) {
+                vulnStore[vuln.cve.id] = { vuln, kevData, kevExists, cvssWithScores, cvssData, desc, published };
+            }
         }));
 
         // Rate limiting - wait between batches
@@ -408,6 +427,8 @@ function displayVulnList(vulnerabilities, containerId, scoreType) {
 
     vulnerabilities.forEach((vuln, index) => {
         const cveId = vuln.cve.id;
+        const kevExists = checkKevExists(cveId);
+
         const description = vuln.cve.descriptions?.[0]?.value || 'No description available';
         const shortDesc = description.length > 150 ? description.substring(0, 150) + '...' : description;
 
@@ -426,7 +447,7 @@ function displayVulnList(vulnerabilities, containerId, scoreType) {
         const kevBadge = vuln.inKEV ? '<span class="badge bg-danger ms-2">KEV</span>' : '';
 
         html += `
-            <div class="card vuln-item ${vuln.severity ? vuln.severity.toLowerCase() : ''}" onclick="showCVEDetails('${cveId}')">
+            <div class="card vuln-item ${vuln.severity ? vuln.severity.toLowerCase() : ''}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <h6 class="mb-1">
@@ -439,6 +460,18 @@ function displayVulnList(vulnerabilities, containerId, scoreType) {
                     <div class="text-end ms-3">
                         <span class="badge bg-secondary">#${index + 1}</span>
                     </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    <div>
+                        <a href="https://nvd.nist.gov/vuln/detail/${cveId}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-box-arrow-up-right"></i> NVD
+                        </a>
+                        ${buildPocButton(cveId)}
+                        ${kevExists ? `<a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" class="btn btn-sm btn-outline-danger ms-2"><i class="bi bi-shield-exclamation"></i> KEV</a>` : ''}
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary detail-btn" data-cve="${cveId}">
+                        <i class="bi bi-arrows-fullscreen"></i> Détails
+                    </button>
                 </div>
             </div>
         `;
